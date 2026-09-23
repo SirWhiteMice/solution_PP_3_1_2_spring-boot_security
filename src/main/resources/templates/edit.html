@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+  <meta charset="UTF-8">
+  <title>Edit User</title>
+</head>
+<body>
+<h2>Edit User</h2>
+<form th:action="@{/admin/edit}" th:object="${user}" method="post">
+  <input type="hidden" th:field="*{id}"/>
+
+  <label for="name">Name:</label>
+  <input type="text" th:field="*{name}" id="name" required/>
+  <br><br>
+
+  <label for="age">Age:</label>
+  <input type="number" th:field="*{age}" id="age" required/>
+  <br><br>
+
+  <label for="email">Email:</label>
+  <input type="email" th:field="*{email}" id="email" required/>
+  <br><br>
+
+  <label for="password">New password (leave blank to keep current):</label>
+  <input type="password" name="password" id="password" autocomplete="new-password"/>
+  <br><br>
+
+  <fieldset><legend>Roles</legend>
+    <label th:each="role : ${roles}">
+      <input type="checkbox" name="roleIds" th:value="${role.id}"
+             th:checked="${selectedRoleIds.contains(role.id)}"/>
+      <span th:text="${role.name}"></span>
+    </label>
+  </fieldset>
+
+  <button type="submit">Update</button>
+</form>
+<br>
+<a th:href="@{/admin}">Back to list</a>
+<form th:action="@{/logout}" method="post"><button type="submit">Logout</button></form>
+</body>
+</html>
