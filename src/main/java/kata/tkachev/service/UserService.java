@@ -12,5 +12,5 @@ public interface UserService {
     void deleteUser(Long id);
     List<User> getAllUsers();
     List<Role> getAllRoles();
-    void initializeDefaultRolesAndAdmin(String email, String password);
+    void initializeDefaultUsers();
 }

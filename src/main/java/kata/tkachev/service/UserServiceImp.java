@@ -78,18 +78,11 @@ public class UserServiceImp implements UserService, UserDetailsService {
 
     @Override
     @Transactional
-    public void initializeDefaultRolesAndAdmin(String email, String password) {
+    public void initializeDefaultUsers() {
         Role admin = getOrCreateRole("ROLE_ADMIN");
         Role regular = getOrCreateRole("ROLE_USER");
-        if (!email.isBlank() && !password.isBlank() && userDao.getUserByEmail(email) == null) {
-            User user = new User();
-            user.setName("Administrator");
-            user.setAge(0);
-            user.setEmail(email);
-            user.setPassword(passwordEncoder.encode(password));
-            user.setRoles(Set.of(admin, regular));
-            userDao.saveUser(user);
-        }
+        createDefaultUser("admin", "admin", "Admin", "User", Set.of(admin, regular));
+        createDefaultUser("user", "user", "Regular", "User", Set.of(regular));
     }
 
     @Override
@@ -100,6 +93,20 @@ public class UserServiceImp implements UserService, UserDetailsService {
             throw new UsernameNotFoundException("User not found: " + email);
         }
         return user;
+    }
+
+    private void createDefaultUser(String email, String password, String firstName, String lastName, Set<Role> roles) {
+        if (userDao.getUserByEmail(email) != null) {
+            return;
+        }
+        User user = new User();
+        user.setFirstName(firstName);
+        user.setLastName(lastName);
+        user.setAge(0);
+        user.setEmail(email);
+        user.setPassword(passwordEncoder.encode(password));
+        user.setRoles(new HashSet<>(roles));
+        userDao.saveUser(user);
     }
 
     private void assignRoles(User user, List<Long> roleIds) {

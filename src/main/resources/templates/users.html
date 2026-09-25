@@ -9,7 +9,8 @@
 <table border="1" cellpadding="5">
   <tr>
     <th>ID</th>
-    <th>Name</th>
+    <th>First name</th>
+    <th>Last name</th>
     <th>Age</th>
     <th>Email</th>
     <th>Roles</th>
@@ -17,7 +18,8 @@
   </tr>
   <tr th:each="user : ${users}">
     <td th:text="${user.id}"></td>
-    <td th:text="${user.name}"></td>
+    <td th:text="${user.firstName}"></td>
+    <td th:text="${user.lastName}"></td>
     <td th:text="${user.age}"></td>
     <td th:text="${user.email}"></td>
     <td><span th:each="role : ${user.roles}" th:text="${role.name + ' '}"></span></td>

@@ -7,8 +7,12 @@
 <body>
 <h2>Add New User</h2>
 <form th:action="@{/admin/new}" th:object="${user}" method="post">
-  <label for="name">Name:</label>
-  <input type="text" th:field="*{name}" id="name" required/>
+  <label for="firstName">First name:</label>
+  <input type="text" th:field="*{firstName}" id="firstName" required/>
+  <br><br>
+
+  <label for="lastName">Last name:</label>
+  <input type="text" th:field="*{lastName}" id="lastName" required/>
   <br><br>
 
   <label for="age">Age:</label>

@@ -28,7 +28,7 @@ public class UserController {
 
     @InitBinder("user")
     public void bindUser(WebDataBinder binder) {
-        binder.setAllowedFields("id", "name", "age", "email", "password");
+        binder.setAllowedFields("id", "firstName", "lastName", "email", "age", "password");
     }
 
     @GetMapping("/login")
@@ -67,7 +67,7 @@ public class UserController {
     }
 
     @PostMapping("/admin/new")
-    public String saveUser(@ModelAttribute("user") User user, @RequestParam List<Long> roleIds) {
+    public String saveUser(@ModelAttribute("user") User user, @RequestParam("roleIds") List<Long> roleIds) {
         userService.saveUser(user, roleIds);
         return "redirect:/admin";
     }
@@ -85,7 +85,7 @@ public class UserController {
     }
 
     @PostMapping("/admin/edit")
-    public String updateUser(@ModelAttribute("user") User user, @RequestParam List<Long> roleIds) {
+    public String updateUser(@ModelAttribute("user") User user, @RequestParam("roleIds") List<Long> roleIds) {
         userService.updateUser(user, roleIds);
         return "redirect:/admin";
     }

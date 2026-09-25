@@ -23,7 +23,7 @@ public class UserDaoImp implements UserDao {
         return manager.createQuery(
                         "SELECT DISTINCT u FROM User u LEFT JOIN FETCH u.roles WHERE u.id = :id", User.class)
                 .setParameter("id", id)
-                .getResultStream()
+                .getResultList().stream()
                 .findFirst()
                 .orElse(null);
     }
@@ -52,6 +52,6 @@ public class UserDaoImp implements UserDao {
         return manager.createQuery(
                         "SELECT DISTINCT u FROM User u LEFT JOIN FETCH u.roles WHERE u.email = :email", User.class)
                 .setParameter("email", email)
-                .getResultStream().findFirst().orElse(null);
+                .getResultList().stream().findFirst().orElse(null);
     }
 }

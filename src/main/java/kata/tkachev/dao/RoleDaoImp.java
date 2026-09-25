@@ -23,7 +23,7 @@ public class RoleDaoImp implements RoleDao {
     public Role findByName(String name) {
         return manager.createQuery("FROM Role r WHERE r.name = :name", Role.class)
                 .setParameter("name", name)
-                .getResultStream()
+                .getResultList().stream()
                 .findFirst()
                 .orElse(null);
     }
