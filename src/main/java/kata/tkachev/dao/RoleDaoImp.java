@@ -9,7 +9,7 @@ import java.util.Collection;
 import java.util.List;
 
 @Repository
-public class пшеRoleDaoImp implements RoleDao {
+public class RoleDaoImp implements RoleDao {
     @PersistenceContext
     private EntityManager manager;
 

@@ -20,7 +20,12 @@ public class UserDaoImp implements UserDao {
 
     @Override
     public User getUserById(Long id) {
-        return manager.find(User.class, id);
+        return manager.createQuery(
+                        "SELECT DISTINCT u FROM User u LEFT JOIN FETCH u.roles WHERE u.id = :id", User.class)
+                .setParameter("id", id)
+                .getResultStream()
+                .findFirst()
+                .orElse(null);
     }
 
     @Override
@@ -38,12 +43,14 @@ public class UserDaoImp implements UserDao {
 
     @Override
     public List<User> getAllUsers() {
-        return manager.createQuery("FROM User", User.class).getResultList();
+        return manager.createQuery(
+                "SELECT DISTINCT u FROM User u LEFT JOIN FETCH u.roles", User.class).getResultList();
     }
 
     @Override
     public User getUserByEmail(String email) {
-        return manager.createQuery("FROM User u WHERE u.email = :email", User.class)
+        return manager.createQuery(
+                        "SELECT DISTINCT u FROM User u LEFT JOIN FETCH u.roles WHERE u.email = :email", User.class)
                 .setParameter("email", email)
                 .getResultStream().findFirst().orElse(null);
     }

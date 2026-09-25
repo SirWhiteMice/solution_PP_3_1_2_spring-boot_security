@@ -1,7 +1,6 @@
 package kata.tkachev.controller;
 
 import kata.tkachev.model.User;
-import kata.tkachev.dao.RoleRepository;
 import kata.tkachev.service.UserService;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
@@ -15,7 +14,6 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.server.ResponseStatusException;
 
-import java.util.HashSet;
 import java.util.List;
 import kata.tkachev.model.Role;
 
@@ -23,11 +21,9 @@ import kata.tkachev.model.Role;
 public class UserController {
 
     private final UserService userService;
-    private final RoleRepository roleRepository;
 
-    public UserController(UserService userService, RoleRepository roleRepository) {
+    public UserController(UserService userService) {
         this.userService = userService;
-        this.roleRepository = roleRepository;
     }
 
     @InitBinder("user")
@@ -66,14 +62,13 @@ public class UserController {
     @GetMapping("/admin/new")
     public String newUser(Model model) {
         model.addAttribute("user", new User());
-        model.addAttribute("roles", roleRepository.findAll());
+        model.addAttribute("roles", userService.getAllRoles());
         return "new";
     }
 
     @PostMapping("/admin/new")
     public String saveUser(@ModelAttribute("user") User user, @RequestParam List<Long> roleIds) {
-        assignRoles(user, roleIds);
-        userService.saveUser(user);
+        userService.saveUser(user, roleIds);
         return "redirect:/admin";
     }
 
@@ -84,15 +79,14 @@ public class UserController {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND);
         }
         model.addAttribute("user", user);
-        model.addAttribute("roles", roleRepository.findAll());
+        model.addAttribute("roles", userService.getAllRoles());
         model.addAttribute("selectedRoleIds", user.getRoles().stream().map(Role::getId).toList());
         return "edit";
     }
 
     @PostMapping("/admin/edit")
     public String updateUser(@ModelAttribute("user") User user, @RequestParam List<Long> roleIds) {
-        assignRoles(user, roleIds);
-        userService.updateUser(user);
+        userService.updateUser(user, roleIds);
         return "redirect:/admin";
     }
 
@@ -100,13 +94,5 @@ public class UserController {
     public String deleteUser(@RequestParam("id") Long id) {
         userService.deleteUser(id);
         return "redirect:/admin";
-    }
-
-    private void assignRoles(User user, List<Long> roleIds) {
-        List<Role> selected = roleRepository.findAllById(roleIds);
-        if (roleIds.isEmpty() || selected.size() != new HashSet<>(roleIds).size()) {
-            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Select valid roles");
-        }
-        user.setRoles(new HashSet<>(selected));
     }
 }
